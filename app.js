@@ -3,8 +3,12 @@ const express = require('express')
 const app = express()
 const PORT = process.env.PORT || 3000;
 
-app.get('/', function(request, response) {
-    response.end('Hello There!')
+const tarefasRouter = require('./api/routes/tarefas')
+
+app.use('/tarefas', tarefasRouter)
+
+app.get('/', function (req, res) {
+    res.redirect('/tarefas')
 })
 
 app.listen(PORT, function() {
