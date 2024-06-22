@@ -1,0 +1,22 @@
+{
+  "name": "listadetarefas",
+  "version": "1.0.0",
+  "description": "Lista de tarefas",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Islan42/TrilhaBackEndJR-JUN15.git"
+  },
+  "author": "Islan Victhor",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Islan42/TrilhaBackEndJR-JUN15/issues"
+  },
+  "homepage": "https://github.com/Islan42/TrilhaBackEndJR-JUN15#readme",
+  "dependencies": {
+    "express": "^4.19.2"
+  }
+}
