@@ -15,6 +15,16 @@ router.post('/', function (req, res) {
     })
 })
 
+router.get('/:id', function () {
+    id = req.params.id
+
+    res.status(200)
+    res.json({
+        message: 'Detalhar tarefa',
+        id: id
+    })
+})
+
 router.patch('/:id', function (req, res) {
     id = req.params.id
 
