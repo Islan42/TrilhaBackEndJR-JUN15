@@ -2,9 +2,13 @@ const express = require('express')
 const router = express.Router()
 
 router.get('/', function (req, res) {
-    res.status(200)
-    res.json({
-        message: 'Lista de Tarefas'
+    
+    req.db('tarefa').select('*').then(function (rows) {
+        res.status(200)
+        res.json({
+            message: 'Lista de Tarefas',
+            tarefas: rows
+        })
     })
 })
 
@@ -15,7 +19,7 @@ router.post('/', function (req, res) {
     })
 })
 
-router.get('/:id', function () {
+router.get('/:id', function (req, res) {
     id = req.params.id
 
     res.status(200)

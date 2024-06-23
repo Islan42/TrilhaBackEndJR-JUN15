@@ -4,7 +4,8 @@
   "description": "Lista de tarefas",
   "main": "index.js",
   "scripts": {
-    "start": "nodemon app.js"
+    "start": "nodemon app.js",
+    "reset-db": "node reset-db.js"
   },
   "repository": {
     "type": "git",
@@ -19,7 +20,9 @@
   "dependencies": {
     "body-parser": "^1.20.2",
     "express": "^4.19.2",
-    "morgan": "^1.10.0"
+    "knex": "^3.1.0",
+    "morgan": "^1.10.0",
+    "sqlite3": "^5.1.7"
   },
   "devDependencies": {
     "nodemon": "^3.1.4"
