@@ -12,7 +12,7 @@ app.use(morgan('dev'))
 app.use(bodyParser.urlencoded({extended: false}))
 app.use(bodyParser.json())
 
-    //Tratando CORS
+//  Tratando CORS
 app.use(function (req, res, next) {
     res.header('Access-Control-Allow-Origin', '*')
     res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With', 'Content-Type', 'Accept', 'Authorization')
@@ -25,14 +25,15 @@ app.use(function (req, res, next) {
     next()
 })
 
-    //Conectando ao Knex
+//  Conectando ao Knex
 app.use(function (req, res, next) {
     const knex = require('knex')
     const db = knex({
         client: 'sqlite3',
         connection: {
             filename: './tarefas.sqlite'
-        }
+        },
+        useNullAsDefault: true,
     })
     
     req.db = db
