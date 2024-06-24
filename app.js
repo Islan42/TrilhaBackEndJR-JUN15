@@ -63,8 +63,8 @@ app.use(function (error, req, res, next) {
     res.status(status)
     res.json({
         error: {
-            message: error.message,
-            status: status
+            status: status,
+            message: error.message
         }
     })
 })
