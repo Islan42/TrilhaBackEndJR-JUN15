@@ -43,12 +43,15 @@ app.use(function (req, res, next) {
 //ROUTES
 
 const tarefasRouter = require('./api/routes/tarefas')
-
-app.use('/tarefas', tarefasRouter)
+const authRouter = require('./api/routes/auth')
 
 app.get('/', function (req, res) {
     res.redirect('/tarefas')
 })
+
+app.use('/tarefas', tarefasRouter)
+app.use('/auth', authRouter)
+
 
 //POS ROUTING MIDDLEWARES
 

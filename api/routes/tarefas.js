@@ -1,13 +1,16 @@
 const express = require('express')
 const router = express.Router()
 
-router.get('/', function (req, res) {
+router.get('/', function (req, res, next) {
     req.db('tarefa').select('*')
     .then(function (rows) {
         res.status(200)
         res.json({
             tarefas: rows
         })
+    })
+    .catch(function (error) {
+        next(error)
     })
 })
 
@@ -46,8 +49,11 @@ router.get('/:id', function (req, res, next) {
                 tarefa: result[0]
             })
         } else {
-            next()
+            next()  //LANÇA UM 404
         }
+    })
+    .catch(function (error) {
+        next(error)
     })
 })
 
@@ -80,15 +86,18 @@ router.patch('/:id', async function (req, res, next) {
     }
 })
 
-router.delete('/:id', function (req, res) {
+router.delete('/:id', function (req, res, next) {
     id = req.params.id
 
     req.db('tarefa').where('id', id).del()
     .then(function (result) {
         res.status(200)
         res.json({
-            message: '200: Tarefa apagada com sucesso',
+            message: '200: Tarefa apagada com sucesso.',
         })
+    })
+    .catch(function (error) {
+        next(error)
     })
 })
 
