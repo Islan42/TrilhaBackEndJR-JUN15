@@ -2,6 +2,9 @@ const express = require('express')
 const router = express.Router()
 const bcrypt = require('bcrypt')
 
+const jwt = require('jsonwebtoken')
+const jwtKey = process.env.JWT_KEY || 'DEVELOPMENT'
+
 router.post('/signup', async function (req, res, next) {
     try {
         const username = req.body.username
@@ -26,7 +29,7 @@ router.post('/login', async function (req, res, next) {
         const user = await req.db('user').select('*').where('username', username)
 
         if (user.length < 1) {
-            const err = new Error('401: Falha na Autenticação.')
+            const err = new Error('401: Falha na Autenticação.') // ELIMINAR
             err.status = 401
             throw err
         }
@@ -34,17 +37,29 @@ router.post('/login', async function (req, res, next) {
         const match = await bcrypt.compare(givenPassword, user[0].password)
 
         if (match === false) {
-            const err = new Error('401: Falha na Autenticação.')
+            const err = new Error('401: Falha na Autenticação.') // ELIMINAR
             err.status = 401
             throw err
         }
 
+        const token = jwt.sign(
+            {
+                id: user[0].id,
+                username: user[0].username
+            },
+            jwtKey, 
+            {
+                expiresIn: '1h'
+            }
+        )
+
         res.status(200)
         res.json({
-            user
+            token
         })
     } catch (error) {
         next(error)
+        // MELHORAR PARA ELIMINAR O CÓDIGO REPETIDO ACIMA
     }
 })
 

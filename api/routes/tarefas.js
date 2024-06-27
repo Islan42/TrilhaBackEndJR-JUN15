@@ -1,5 +1,6 @@
 const express = require('express')
 const router = express.Router()
+const checkAuth = require('../middlewares/check-auth')
 
 router.get('/', function (req, res, next) {
     req.db('tarefa').select('*')
@@ -14,7 +15,7 @@ router.get('/', function (req, res, next) {
     })
 })
 
-router.post('/', async function (req, res, next) {
+router.post('/', checkAuth, async function (req, res, next) {
     try {
         const nome = req.body.nome
         const descricao = req.body.descricao || ""  //A descrição pode ser nula, mas em vez disso prefiro transformá-la numa string vazia
@@ -57,7 +58,7 @@ router.get('/:id', function (req, res, next) {
     })
 })
 
-router.patch('/:id', async function (req, res, next) {
+router.patch('/:id', checkAuth, async function (req, res, next) {
     // OBS: QUANDO USAR TRY CATCH USAR TAMBÉM ASYNC, POIS ESSE BLOCO NAO FUNCIONA BEM COM O MODELO .THEN().CATCH(), POIS A FUNÇÃO DEIXA O BLOCO TC ANTES DA PROMISSE FINALIZAR .THEN().CATCH()
     try {
         id = req.params.id
@@ -86,9 +87,9 @@ router.patch('/:id', async function (req, res, next) {
     }
 })
 
-router.delete('/:id', function (req, res, next) {
+router.delete('/:id', checkAuth, function (req, res, next) {
     id = req.params.id
-
+    // MELHORAR PARA INDICAR AO USUÁRIO QUANDO ELE TENTAR DELETAR UMA TAREFA QUE NÃO EXISTE MAIS
     req.db('tarefa').where('id', id).del()
     .then(function (result) {
         res.status(200)
