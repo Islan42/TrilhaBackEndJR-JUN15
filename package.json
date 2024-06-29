@@ -4,7 +4,7 @@
   "description": "Lista de tarefas",
   "main": "index.js",
   "engines": {
-    "node": ">=20.10.0"
+    "node": ">=10"
   },
   "scripts": {
     "start": "nodemon app.js",
