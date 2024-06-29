@@ -3,6 +3,9 @@
   "version": "1.0.0",
   "description": "Lista de tarefas",
   "main": "index.js",
+  "engines": {
+    "node": ">=20.10.0"
+  },
   "scripts": {
     "start": "nodemon app.js",
     "reset-db": "node reset-db.js"
