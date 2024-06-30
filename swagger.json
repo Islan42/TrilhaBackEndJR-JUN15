@@ -27,6 +27,35 @@
                                 }
                             }
                         }
+                    },
+                    "400": {
+                        "description": "Erro: Usuário já cadastrado.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "error": {
+                                            "type": "object",
+                                            "properties": {
+                                                "status": {
+                                                    "type": "integer"
+                                                },
+                                                "message": {
+                                                    "type": "string"
+                                                }
+                                            }
+                                        }
+                                    }
+                                },
+                                "example": {
+                                    "error": {
+                                        "status": 400,
+                                        "message": "Erro: Usuário já cadastrado."
+                                    }
+                                }
+                            }
+                        }
                     }
                 },
                 "requestBody": {

@@ -5,6 +5,15 @@ const jwtKey = process.env.JWT_KEY || 'DEVELOPMENT'
 async function singUp(req, res, next) {
     try {
         const username = req.body.username
+
+        const user = await req.db('user').select('*').where('username', username)
+
+        if (user.length !== 0) {
+            const err = new Error('400: Usuário já cadastrado.')
+            err.status = 400
+            throw err
+        }
+
         const password = await bcrypt.hash(req.body.password, 10)
 
         const result = await req.db('user').insert({username, password}, ['id', 'username'])
@@ -25,7 +34,7 @@ async function logIn(req, res, next) {
 
         const user = await req.db('user').select('*').where('username', username)
 
-        if (user.length < 1) {
+        if (user.length === 0) {
             const err = new Error('401: Falha na Autenticação.')
             err.status = 401
             throw err
