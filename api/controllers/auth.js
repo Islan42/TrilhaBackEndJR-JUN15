@@ -7,7 +7,7 @@ async function singUp(req, res, next) {
         const username = req.body.username
         const password = await bcrypt.hash(req.body.password, 10)
 
-        const result = await req.db('user').insert({username, password}, ['username', 'password'])
+        const result = await req.db('user').insert({username, password}, ['id', 'username'])
 
         res.status(201)
         res.json({
@@ -69,7 +69,7 @@ async function deleteUser(req, res, next) {
             error.status = 404
             throw error
         }
-        
+
         await req.db('user').where('id', userID).del()
 
         res.status(200)
