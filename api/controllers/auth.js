@@ -62,6 +62,14 @@ async function logIn(req, res, next) {
 async function deleteUser(req, res, next) {
     try {
         const userID = req.params.userID
+
+        const usuario = await req.db('user').select('*').where('id', userID)
+        if (usuario.length === 0) {
+            const error = new Error('404: Usuário não encontrado.')
+            error.status = 404
+            throw error
+        }
+        
         await req.db('user').where('id', userID).del()
 
         res.status(200)

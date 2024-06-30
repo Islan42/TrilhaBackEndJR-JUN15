@@ -1,0 +1,526 @@
+{
+    "openapi": "3.0.0",
+
+    "info": {
+        "title": "Tarefas API",
+        "description": "API para trabalhar com Tarefas (TO DO)",
+        "version": "1.0.0"
+    },
+
+    "paths": {
+        "/auth/signup": {
+            "post": {
+                "summary": "Cria um novo usuário",
+                "tags": ["Auth"],
+                "responses": {
+                    "201": {
+                        "description": "Usuário criado com sucesso",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "usuario": {
+                                            "$ref": "#/components/schemas/Usuario"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "requestBody": {
+                    "$ref": "#/components/requestBodies/UsuarioBody"
+                }
+            }
+        },
+        "/auth/login": {
+            "post": {
+                "summary": "Log In",
+                "tags": ["Auth"],
+                "responses": {
+                    "200": {
+                        "description": "Login realizado com sucesso.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "token": {
+                                            "type": "string"
+                                        }
+                                    }
+                                }
+                            }
+                        },
+                        "links": {
+                            "CreateTarefaWithToken": {
+                                "operationId": "createTarefa",
+                                "parameters": {
+                                    "Authorization": "$response.body#/token"
+                                },
+                                "description": "Use este token para ter acesso ao recurso 'Criar Tarefa'."
+                            },
+                            "UpdateTarefaWithToken": {
+                                "operationId": "updateTarefa",
+                                "parameters": {
+                                    "Authorization": "$response.body#/token"
+                                },
+                                "description": "Use este token para ter acesso ao recurso 'Update Tarefa'."
+                            },
+                            "DeleteTarefaWithToken": {
+                                "operationId": "deleteTarefa",
+                                "parameters": {
+                                    "Authorization": "$response.body#/token"
+                                },
+                                "description": "Use este token para ter acesso ao recurso 'Deletar Tarefa'."
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Falha na autenticação. Usuário ou Senha inválidos.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "error": {
+                                            "$ref": "#/components/schemas/Error"
+                                        }
+                                    }
+                                },
+                                "example": {
+                                    "error": {
+                                        "status": 401,
+                                        "message": "Falha na Autenticação. Usuário ou Senha inválidos."
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "requestBody": {
+                    "$ref": "#/components/requestBodies/UsuarioBody"
+                }
+            }
+        },
+        "/auth/{userID}": {
+            "delete": {
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "userID",
+                        "required": true,
+                        "description": "ID do Usuário"
+                    }
+                ],
+                "summary": "Deleta um usuário",
+                "tags": ["Auth"],
+                "responses": {
+                    "200": {
+                        "description": "Usuário Deletado com sucesso.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Usuário deletado com sucesso."
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "$ref": "#components/responses/NotFound"
+                    }
+                }
+            }
+        },
+        "/tarefas": {
+            "get": {
+                "summary": "Retorna uma lista com todas as tarefas",
+                "tags": ["Tarefas"],
+                "responses": {
+                    "200": {
+                        "description": "Um Array JSON com tarefas",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "tarefas": {
+                                            "$ref": "#/components/schemas/ListaTarefas"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "post": {
+                "summary": "Cria uma tarefa",
+                "tags": ["Tarefas"],
+                "operationId": "createTarefa",
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Retorna a tarefa criada.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "tarefa": {
+                                            "$ref": "#/components/schemas/Tarefa"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/Unauthorized"
+                    },
+                    "400": {
+                        "description": "A coluna `finalizada` deve ser 0 (false) ou 1 (true).",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "error": {
+                                            "type": "object",
+                                            "properties": {
+                                                "status": {
+                                                    "type": "integer",
+                                                    "example": 400
+                                                },
+                                                "message": {
+                                                    "type": "string"
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "requestBody": {
+                    "$ref": "#/components/requestBodies/TarefaCreateBody"
+                }
+            }
+        },
+        "/tarefas/{id}": {
+            "get": {
+                "summary": "Retorna uma única tarefa",
+                "tags": ["Tarefas"],
+                "responses": {
+                    "200": {
+                        "description": "Sucesso ao retornar uma única tarefa.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "tarefa": {
+                                            "$ref": "#/components/schemas/Tarefa"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "$ref": "#/components/responses/NotFound"
+                    }
+                }
+            },
+            "patch": {
+                "summary": "Altera os dados de uma tarefa",
+                "tags": ["Tarefas"],
+                "operationId": "updateTarefa",
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "A Tarefa foi alterada com sucesso",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "tarefa": {
+                                            "$ref": "#/components/schemas/Tarefa"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Você não deve tentar alterar a coluna `id` (6º Mandamento).",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "error": {
+                                            "type": "object",
+                                            "properties": {
+                                                "status": {
+                                                    "type": "integer",
+                                                    "example": 400
+                                                },
+                                                "message": {
+                                                    "type": "string"
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/Unauthorized"
+                    },
+                    "404": {
+                        "$ref": "#/components/responses/NotFound"
+                    }
+                },
+                "requestBody": {
+                    "$ref": "#/components/requestBodies/TarefaUpdateBody"
+                }
+            },
+            "delete": {
+                "summary": "Deleta uma tarefa",
+                "tags": ["Tarefas"],
+                "operationId": "deleteTarefa",
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "A Tarefa foi deletada com sucesso.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "A Tarefa foi deletada com sucesso."
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/Unauthorized"
+                    },
+                    "404": {
+                        "$ref": "#/components/responses/NotFound"
+                    }
+                }
+            },
+            "parameters": [
+                {
+                    "in": "path",
+                    "name": "id",
+                    "required": true,
+                    "description": "O ID da tarefa"
+                }
+            ]
+        }
+    },
+
+    "components": {
+        "schemas": {
+            "Tarefa": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "minimun": 1,
+                        "example": 3,
+                        "readOnly": true
+                    },
+                    "nome": {
+                        "type": "string",
+                        "example": "Lavar os pratos"
+                    },
+                    "descricao": {
+                        "type": "string",
+                        "example": "Lavar os pratos de maneira adequada."
+                    },
+                    "finalizada": {
+                        "type": "integer",
+                        "enum": [0, 1],
+                        "example": 1
+                    }
+                },
+                "required": ["nome", "finalizada"]
+            },
+            "ListaTarefas": {
+                "type": "array",
+                "items": {
+                    "$ref": "#/components/schemas/Tarefa"
+                }
+            },
+            "Usuario": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "readOnly": true,
+                        "example": 2
+                    },
+                    "username": {
+                        "type": "string",
+                        "example": "abc"
+                    },
+                    "password": {
+                        "type": "string",
+                        "writeOnly": true,
+                        "example": "123"
+                    }
+                }
+            },
+            "Error": {
+                "type": "object",
+                "properties": {
+                    "status": {
+                        "type": "integer"
+                    },
+                    "message": {
+                        "type": "string"
+                    }
+                }
+            }
+        },
+
+        "responses": {
+            "NotFound": {
+                "description": "O Recurso especificado não foi encontrado.",
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "error": {
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        },
+                        "example": {
+                            "error": {
+                                "status": 404,
+                                "message": "Recurso não encontrado."
+                            }
+                        }
+                    }
+                }
+            },
+            "Unauthorized": {
+                "description": "É necessário um Token de identificação para acessar este recurso.",
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "error": {
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        },
+                        "example": {
+                            "error": {
+                                "status": 401,
+                                "message": "Falha na Autenticação."
+                            }
+                        }
+                    }
+                }
+            }
+        },
+
+        "requestBodies": {
+            "UsuarioBody": {
+                "description": "Credenciais: Nome de Usuário, Senha",
+                "required": true,
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "$ref": "#/components/schemas/Usuario"
+                        }
+                    }
+                }
+            },
+            "TarefaCreateBody": {
+                "description": "JSON Contendo: Nome da Tarefa, Descrição, Finalizada [0,1]",
+                "required": true,
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "$ref": "#/components/schemas/Tarefa"
+                        }
+                    }
+                }
+            },
+            "TarefaUpdateBody": {
+                "description": "JSON Array contendo Objetos. Cada objeto faz referência a uma coluna a ser alterada.",
+                "required": true,
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "type": "object",
+                                "properties": {
+                                    "col": {
+                                        "type": "string"
+                                    },
+                                    "newValue": {
+                                        "oneOf": [
+                                            {"type": "string"},
+                                            {"type": "integer"}
+                                        ]
+                                    }
+                                }
+                            },
+                            "minItems": 1
+                        },
+                        "example": [
+                            {"col": "nome", "newValue": "TesteNome"},
+                            {"col": "descricao", "newValue": "TesteDescricao"},
+                            {"col": "finalizada", "newValue": 0}
+                        ]
+                    }
+                }
+            }
+        },
+
+        "securitySchemes": {
+            "BearerAuth": {
+                "type": "http",
+                "scheme": "bearer",
+                "bearerFormat": "JWT"
+            }
+        }
+    }
+}

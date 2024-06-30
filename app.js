@@ -15,7 +15,7 @@ app.use(bodyParser.json())
 //  Tratando CORS
 app.use(function (req, res, next) {
     res.header('Access-Control-Allow-Origin', '*')
-    res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With', 'Content-Type', 'Accept', 'Authorization')
+    res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, Authorization')
     
     if (req.method === 'OPTIONS') {
         res.header('Access-Control-Allow-Methods', 'PUT, POST, PATCH, GET, DELETE')
@@ -45,10 +45,14 @@ app.use(function (req, res, next) {
 const tarefasRouter = require('./api/routes/tarefas')
 const authRouter = require('./api/routes/auth')
 
+const swaggerUI = require('swagger-ui-express')
+const swaggerDoc = require('./swagger.json')
+
 app.get('/', function (req, res) {
     res.redirect('/tarefas')
 })
 
+app.use('/api-docs', swaggerUI.serve, swaggerUI.setup(swaggerDoc))
 app.use('/tarefas', tarefasRouter)
 app.use('/auth', authRouter)
 

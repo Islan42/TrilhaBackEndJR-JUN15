@@ -59,6 +59,13 @@ async function updateOne(req, res, next) {
     // OBS: QUANDO USAR TRY CATCH USAR TAMBÉM ASYNC, POIS ESSE BLOCO NAO FUNCIONA BEM COM O MODELO .THEN().CATCH(), POIS A FUNÇÃO DEIXA O BLOCO TC ANTES DA PROMISSE FINALIZAR .THEN().CATCH()
     try {
         id = req.params.id
+
+        const tarefa = await req.db('tarefa').select('*').where('id', id)  
+        if (tarefa.length === 0) {
+            const error = new Error('404: Tarefa não encontrada')
+            error.status = 404
+            throw error
+        }
     
         let updatedObject = {}
     
@@ -66,7 +73,7 @@ async function updateOne(req, res, next) {
             updatedObject[element.col] = element.newValue    
         });
 
-        if (Object.hasOwn(updatedObject, 'id')){
+        if (updatedObject.hasOwnProperty('id')){
             const error = new Error('400: Você não deve tentar alterar o id (6º Mandamento).')
             error.status = 400
             throw error
@@ -91,8 +98,8 @@ async function deleteOne(req, res, next) {
         // TALVEZ ISTO SEJA UMA FALHA DE SEGURANÇA ?
         const tarefa = await req.db('tarefa').select('*').where('id', id)  
         if (tarefa.length === 0) {
-            const error = new Error('400: Tarefa não encontrada')
-            error.status = 400
+            const error = new Error('404: Tarefa não encontrada')
+            error.status = 404
             throw error
         }
 
