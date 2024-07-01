@@ -1,5 +1,53 @@
 ![Código Certo Coders](https://utfs.io/f/3b2340e8-5523-4aca-a549-0688fd07450e-j4edu.jfif)
 
+# Introdução
+
+Olá. Esta é a minha versão do desafio da Trilha Inicial BackEnd Jr proposto pela "Código Certo Coders".
+
+Neste desafio, desenvolvi uma API REST para gerenciar tarefas (CRUD) utilizando ExpressJS e SQLite. Além disso utilizei JWT para autenticação e proteção de rotas, e Swagger para documentação da API. Aprendi MUITO no decorrer desse projeto: Finalmente entendi DE VERDADE o significado de API REST; Aprendi sobre autenticação JWT; Apanhei pra configurar o SQLite de uma maneira que fizesse sentido para mim; E aprendi muito sobre Swagger e OpenAPI, e como são poderosas ferramentas para documentar e testar a API.
+
+Por fim, além de todo pessoal da Código Certo pelo incentivo e pelas dicas quando precisei, gostaria de agradecer ao canal [Academind](https://www.youtube.com/@academind) e sua playlist [Building a RESTful API with NodeJS](https://www.youtube.com/playlist?list=PL55RiY5tL51q4D-B63KBnygU6opNPFk_q) por terem sido a base para o código desse projeto. Aprendi insanamente no decorrer do 'curso' e pude ir além.
+
+## Instalação
+
+Antes de tudo é necessário ter o [git](https://git-scm.com/downloads) e o [node >=10](https://nodejs.org/en/download/package-manager/current) instalados. E então:
+
+1. Clone este repositório
+
+    Abra o seu terminal no seu diretório preferido e em seguida:
+   ```
+   git clone https://github.com/Islan42/TrilhaBackEndJR-JUN15.git
+   ```
+2. Instale as dependências
+
+   ```
+   cd TrilhaBackEndJR-JUN15
+   ```
+   ```
+   npm install
+   ```
+   
+3. Renicie o Banco de Dados
+
+   Opcional*
+   ```
+   npm run reset-db
+   ```
+4. Inicie o servidor
+   ```
+   npm run start
+   ```
+
+## Documentação da API
+
+Após iniciar o servidor (acima) a documentação pode ser acessada em http://localhost:3000/api-docs
+
+Ou na versão hospedada do projeto https://successful-zippy-chestnut.glitch.me/api-docs
+
+## Hospedagem
+
+A API foi hospedada no Glitch e pode ser acessada pelo link: https://successful-zippy-chestnut.glitch.me
+
 # 📚 Trilha Inicial BackEnd Jr
 Este projeto tem como objetivo desenvolver uma API RESTful para gerenciamento de tarefas, proporcionando funcionalidades de CRUD (Create, Read, Update, Delete) de tarefas, autenticação de usuários e armazenamento dos dados em um banco de dados.
 
